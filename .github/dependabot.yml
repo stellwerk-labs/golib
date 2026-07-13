@@ -1,0 +1,26 @@
+version: 2
+updates:
+  - package-ecosystem: gomod
+    directories:
+      - "*"
+    # Disable updates except for vulnerabilities
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+      day: sunday
+    commit-message:
+      prefix: "build"
+      include: "scope"
+    groups:
+      opentelemetry:
+        patterns:
+          - "go.opentelemetry.io/*"
+  - package-ecosystem: github-actions
+    directory: /
+    # Disable updates except for vulnerabilities
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "build"
+      include: "scope"

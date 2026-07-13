@@ -1,0 +1,1 @@
+ALTER TABLE IF EXISTS migration_test_table DELETE COLUMN IF EXISTS "name" text;

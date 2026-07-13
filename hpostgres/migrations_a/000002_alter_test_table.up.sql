@@ -1,0 +1,1 @@
+ALTER TABLE IF EXISTS migration_test_table ADD COLUMN IF NOT EXISTS "name" text;

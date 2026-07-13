@@ -1,0 +1,90 @@
+openapi: 3.0.0
+info:
+  title: ""
+  version: ""
+paths:
+  /test:
+    get:
+      summary: List Internal Value Set Versions in an Environment of an App
+      parameters: []
+      responses:
+        "200":
+          description: |+
+            A possibly empty list of Response.
+
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Response'
+                type: array
+    post:
+      summary: List Internal Value Set Versions in an Environment of an App
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Response'
+      responses:
+        "200":
+          description: |+
+            A possibly empty list of Response.
+
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Response'
+                type: array
+  /test-file:
+    post:
+      summary: List Internal Value Set Versions in an Environment of an App
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+              schema:
+                type: object
+                required:
+                  - file
+                properties:
+                  file:
+                    type: string
+                    format: binary
+                  metadata:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                    required:
+                      - name
+      responses:
+        "200":
+          description: |+
+            A possibly empty list of Response.
+
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+components:
+  securitySchemes:
+    userIdHeader:
+      type: apiKey
+      in: header
+      name: from
+  schemas:
+    Response:
+      description: PlatformOrchestratorError represents a standard Platform Orchestrator Error
+      properties:
+        details:
+          additionalProperties: true
+          type: object
+        error:
+          type: string
+        message:
+          type: string
+      type: object

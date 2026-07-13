@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
+          cache-dependency-path: hecho/go.sum # random library to enable some caching
+
+      - run: make test
+      - run: make release-util-test
+
+  lint-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+          docker run --pull=always --rm --entrypoint cat \
+            ghcr.io/stellwerk-labs/semantic-release-action /action/default.commitlint.config.mjs > commitlint.config.mjs
+      - uses: wagoid/commitlint-github-action@v6
+
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    needs:
+      - lint-commits
+      - test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - id: release
+        uses: stellwerk-labs/semantic-release-action@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup go
+        if: ${{ steps.release.outputs.version != '' }}
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
+          cache-dependency-path: hecho/go.sum # random library to enable some caching
+
+      - name: Configure git for pushing
+        if: ${{ steps.release.outputs.version != '' }}
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+      - name: Fix .git folder permissions # Workaround for https://github.com/actions/checkout/issues/164
+        if: ${{ steps.release.outputs.version != '' }}
+        run: |
+          sudo chmod -R ugo+rwX .git
+
+      - name: Create module tags
+        if: ${{ steps.release.outputs.version != '' }}
+        run: |
+          version=${{ steps.release.outputs.version }} make release

@@ -1,0 +1,22 @@
+go 1.25.6
+
+use (
+	./hconfig
+	./hdbmigrate
+	./hecho
+	./henvflags
+	./herrors
+	./hlogger
+	./hpagination
+	./hpostgres
+	./hpostgresconnect
+	./hrabbitmq
+	./hretrier
+	./hservicejwt
+	./hstandardreliableoutbox
+	./htelemetry
+	./htemplate
+	./httplogger
+	./hvaultapi
+	./utils/release
+)

@@ -1,0 +1,25 @@
+# Go workspace checksums
+go.work.sum
+
+# Local assistants and handoff notes
+.claude/
+CODEX_HANDOFF.md
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Build and test output
+*.test
+*.out
+cover.out
+coverage.out
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
