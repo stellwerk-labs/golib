@@ -1,4 +1,42 @@
 {
-  "extends": "/action/default.releaserc.json",
-  "tagFormat": "v${version}"
+  "tagFormat": "v${version}",
+  "branches": ["main"],
+  "plugins": [
+    ["@semantic-release/commit-analyzer", {
+      "preset": "conventionalcommits",
+      "releaseRules": [
+        {"breaking": true, "release": "major"},
+        {"revert": true, "release": "patch"},
+        {"type": "feat", "release": "minor"},
+        {"type": "fix", "release": "patch"},
+        {"type": "build", "scope": "deps", "release": "patch"}
+      ],
+      "parserOpts": {
+        "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
+      }
+    }],
+    ["@semantic-release/release-notes-generator", {
+      "preset": "conventionalcommits",
+      "parserOpts": {
+        "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAKING"]
+      },
+      "writerOpts": {
+        "commitsSort": ["subject", "scope"]
+      },
+      "presetConfig": {
+        "types": [
+          {"type": "feat", "section": "Features"},
+          {"type": "fix", "section": "Bug Fixes"},
+          {"type": "chore", "section": "Chores"},
+          {"type": "docs", "section": "Docs"},
+          {"type": "style", "section": "Style"},
+          {"type": "refactor", "section": "Refactorings"},
+          {"type": "perf", "section": "Performance"},
+          {"type": "test", "section": "Tests"},
+          {"type": "build", "section": "Build"}
+        ]
+      }
+    }],
+    "@semantic-release/github"
+  ]
 }
