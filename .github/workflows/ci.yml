@@ -25,15 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: read
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
-          docker run --pull=always --rm --entrypoint cat \
-            ghcr.io/stellwerk-labs/semantic-release-action /action/default.commitlint.config.mjs > commitlint.config.mjs
       - uses: wagoid/commitlint-github-action@v6
 
   release:
